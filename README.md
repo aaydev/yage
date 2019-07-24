@@ -5,6 +5,9 @@ Yet Another Georgian Encoder
 
 ### Command line parameters:
 yage.exe TextFile Language Encoding
+
+All parameters are required in the latest build.
+
 * TextFile is a source file for conversion. This file will be converted and overwritten.
 * Language possible values:
   - **'ge' for Georgian language**
