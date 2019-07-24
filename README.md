@@ -7,8 +7,8 @@ Yet Another Georgian Encoder
 yage.exe TextFile Language Encoding
 * TextFile is a source file for conversion. This file will be converted and overwritten.
 * Language possible values:
--** 'ge' for Georgian language
--** 'az' for Azerbaijani language
+  - **'ge' for Georgian language**
+  - **'az' for Azerbaijani language**
 * Encoding possible values:
--** 'utf8'
--** 'unicode' (e.g. UTF16)
+  - **'utf8'**
+  - **'unicode' (e.g. UTF16)**
