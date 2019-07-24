@@ -5,12 +5,14 @@ program Project1;
 {$R *.res}
 
 uses
+  Winapi.Windows,
   System.Classes,
   System.SysUtils;
 
 var
   filename1: string;
   language: string;
+  encoding: string;
   Text1, Text2: TStrings;
   CharValue: Cardinal;
   i, j: Integer;
@@ -19,38 +21,54 @@ var
 
 begin
   Writeln;
-  Writeln('YAGE: Yet Another Georgian Encoder v1.1');
+  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE or FOREGROUND_GREEN or FOREGROUND_RED or FOREGROUND_INTENSITY);
+  Writeln('YAGE v1.2');
+  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED or FOREGROUND_GREEN or FOREGROUND_BLUE);
 
   if ParamCount = 0 then
   begin
     Writeln('(c) Alexey Anisimov <softlight@ya.ru>, 2019');
     Writeln('(c) incadea RUS, 2019. All rights reserved.');
     Writeln;
-    Writeln('Usage: SourceFile LanguageCode');
+    Writeln('Usage: SourceFile LanguageCode Encoding');
     Halt(0)
   end;
 
   filename1 := ParamStr(1);
   language := LowerCase(ParamStr(2));
+  encoding := LowerCase(ParamStr(3));
 
-  Writeln;
-
-  if ParamCount <> 2 then
+  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN or FOREGROUND_RED);
+  if ParamCount <> 3 then
   begin
-    Writeln('Invalid parameters! Source File and Language Code are required parameters.');
+    Writeln('Invalid parameters! Source File, Language Code and Encoding are required parameters.');
     Halt(1)
   end;
 
   if (language <> 'az') and (language <> 'ge') then
   begin
-    Writeln('Invalid language code! Allowed values: ge,az.');
+    Writeln('Invalid language code! Allowed values: "ge", "az".');
     Halt(2)
   end;
 
+  if (encoding <> 'utf8') and (encoding <> 'unicode') then
+  begin
+    Writeln('Invalid encoding! Allowed values: "utf8" ,"unicode".');
+    Halt(3)
+  end;
+
+  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED or FOREGROUND_GREEN or FOREGROUND_BLUE);
+
   Text1 := TStringList.Create();
   Text2 := TStringList.Create();
+
   try
-    Text1.LoadFromFile(filename1, TEncoding.UTF8);
+    if encoding = 'utf8' then
+      Text1.LoadFromFile(filename1, TEncoding.UTF8)
+    else
+    if encoding = 'unicode' then
+      Text1.LoadFromFile(filename1, TEncoding.Unicode);
+
     for i := 0 to Text1.Count - 1 do
     begin
       Line1 := Text1.Strings[i];
@@ -269,16 +287,25 @@ begin
       Text2.Add(Line2);
     end;
 
-    Text2.SaveToFile(filename1, TEncoding.UTF8);
+    if encoding = 'utf8' then
+      Text2.SaveToFile(filename1, TEncoding.UTF8)
+    else
+    if encoding = 'unicode' then
+      Text2.SaveToFile(filename1, TEncoding.Unicode);
+
     FreeAndNil(Text1);
     FreeAndNil(Text2);
-    Writeln('Done!')
+
+    Writeln(Format('File %s converted.', [filename1]));
   except
     on E: Exception do
     begin
       FreeAndNil(Text1);
       FreeAndNil(Text2);
+      SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED);
       Writeln(E.ClassName, ': ', E.Message);
+      SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED or FOREGROUND_GREEN or FOREGROUND_BLUE);
+      halt(4);
     end;
   end;
 
