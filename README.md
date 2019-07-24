@@ -15,3 +15,6 @@ All parameters are required in the latest build.
 * Encoding possible values:
   - **'utf8'**
   - **'unicode' (e.g. UTF16)**
+
+### Downloads:
+- [Latest release](https://github.com/incanav/yage/releases/latest)
