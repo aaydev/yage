@@ -1,5 +1,5 @@
 # YAGE
-Yet Another Georgian Encoder
+Yet Another Global Encoder
 
 - **YAGE** is a command line tool for text/xml file converson for classic MS Dynamics NAV client application. Classic client only supports non-unicode code pages. But external interfaces may required common unicode files. Thus the data must be converted accordingly when unloading prior import.
 
