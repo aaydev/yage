@@ -4,17 +4,21 @@ Yet Another Georgian Encoder
 - **YAGE** is a command line tool for text/xml file converson for classic MS Dynamics NAV client application. Classic client only supports non-unicode code pages. But external interfaces may required common unicode files. Thus the data must be converted accordingly when unloading prior import.
 
 ### Command line parameters:
-yage.exe TextFile Language Encoding
+Usage: yage.exe SourceFile [keys]
 
-All parameters are required in the latest build.
-
-* TextFile is a source file for conversion. This file will be converted and overwritten.
-* Language possible values:
-  - **'ge' for Georgian language**
-  - **'az' for Azerbaijani language**
-* Encoding possible values:
-  - **'utf8'**
-  - **'unicode' (e.g. UTF16)**
+- **Keys:**
+* [/enc:Encoding] - file encoding
+valid values:
+  - **"utf8" (default value)**
+  - **"unicode"**
+  
+* [/lang:Language] - destination file language
+valid values:
+  - **"ge" (Georgian, default value)**
+  - **"az" (Azerbaijanian)**
+  
+* [/file:ResultFileName] - result file name
+* [/log] - show execution details
 
 ### Downloads:
 - [Latest release](https://github.com/incanav/yage/releases/latest)
