@@ -6,7 +6,7 @@ Yet Another Global Encoder
 ### Command line parameters:
 Usage: yage.exe SourceFile [keys]
 
-- **Keys:**
+### Keys:
 * [/enc:Encoding] - file encoding
 valid values:
   - **"utf8" (default value)**
