@@ -187,7 +187,7 @@ begin
 
   // set default values for params
   FOutputFile := FInputFile;
-  FEncoding := 'urf8';
+  FEncoding := 'utf8';
   FLanguage := 'ge';
   FLog := False;
 
