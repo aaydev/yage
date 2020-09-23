@@ -52,10 +52,10 @@ begin
   List.Add('Keys:');
   List.Add('[/from:Encoding] - source file encoding');
   List.Add('    valid values:');
-  List.Add('      - "ansi" (default value), "ascii", "utf8", "unicode"');
+  List.Add('      - "oem" (default value), "utf8", "unicode"');
   List.Add('[/to:Encoding] - destination file encoding');
   List.Add('    valid values:');
-  List.Add('      - "ansi", "ascii", "utf8" (default value), "unicode"');
+  List.Add('      - "oem", "utf8" (default value), "unicode"');
   List.Add('[/file:ResultFileName] - destination file name');
   List.Add('[/log] - show execution details');
   List.Add('');

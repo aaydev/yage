@@ -1,24 +1,22 @@
 # YAGE
 Yet Another Global Encoder
 
-- **YAGE** is a command line tool for text/xml file converson for classic MS Dynamics NAV client application. Classic client only supports non-unicode code pages. But external interfaces may required common unicode files. Thus the data must be converted accordingly when unloading prior import.
+- **YAGE** is a command line tool for text/xml file converson for classic MS Dynamics NAV client application. Classic client supports non-unicode code pages only. External interfaces may required common unicode files. Thus the data must be converted accordingly when unloading prior import.
 
 ### Command line parameters:
-Usage: yage.exe SourceFile [keys]
+Usage: yage.exe SourceFile ConversionTableFile [keys]
 
 ### Keys:
-* [/enc:Encoding] - file encoding
+* [/from:Encoding] - source file encoding
 valid values:
-  - **"utf8" (default value)**
-  - **"unicode"**
+  - **"oem" (default value), "ascii", "utf8", "unicode"**
   
-* [/lang:Language] - destination file language
+* [/to:Encoding] - destination file encoding
 valid values:
-  - **"ge" (Georgian, default value)**
-  - **"az" (Azerbaijanian)**
+  - **"oem", "utf8" (default value), "unicode"**
   
-* [/file:ResultFileName] - result file name
+* [/file:ResultFileName] - destination file name
 * [/log] - show execution details
 
 ### Downloads:
-- [Latest release](https://github.com/incanav/yage/releases/latest)
+- [Latest build](https://github.com/incanav/yage/releases/latest)
