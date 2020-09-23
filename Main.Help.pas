@@ -1,7 +1,7 @@
 {*******************************************************}
 { YAGE: Yet Another Global Encoder                      }
 { Unit: Main.Help                                       }
-{ Copyright(c) 2019 Alexey Anisimov                     }
+{ Copyright(c) 2020 Alexey Anisimov                     }
 { Contact email: softlight@ya.ru                        }
 {*******************************************************}
 
@@ -50,15 +50,13 @@ begin
   List.Add(Format(UsageString, [LowerCase(AppName)]));
   List.Add('');
   List.Add('Keys:');
-  List.Add('[/enc:Encoding] - file encoding');
+  List.Add('[/from:Encoding] - source file encoding');
   List.Add('    valid values:');
-  List.Add('      - "utf8" (default value)');
-  List.Add('      - "unicode"');
-  List.Add('[/lang:Language] - destination file language');
+  List.Add('      - "ansi" (default value), "ascii", "utf8", "unicode"');
+  List.Add('[/to:Encoding] - destination file encoding');
   List.Add('    valid values:');
-  List.Add('      - "ge" (Georgian, default value)');
-  List.Add('      - "az" (Azerbaijanian)');
-  List.Add('[/file:ResultFileName] - result file name');
+  List.Add('      - "ansi", "ascii", "utf8" (default value), "unicode"');
+  List.Add('[/file:ResultFileName] - destination file name');
   List.Add('[/log] - show execution details');
   List.Add('');
 
