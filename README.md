@@ -9,7 +9,7 @@ Usage: yage.exe SourceFile ConversionTableFile [keys]
 ### Keys:
 * [/from:Encoding] - source file encoding
 valid values:
-  - **"oem" (default value), "ascii", "utf8", "unicode"**
+  - **"oem" (default value), "utf8", "unicode"**
   
 * [/to:Encoding] - destination file encoding
 valid values:
