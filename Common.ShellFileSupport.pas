@@ -241,11 +241,9 @@ var
   Path: string;
   I: Integer;
 begin
+  Result := False;
   if APath = '' then
-  begin
-    Result := False;
     Exit;
-  end;
 
   // The function splits the path into parts and checks each part by calling MoveFile
   // MoveFile will return either OK or ERROR_ALREADY_EXISTS for the correct parts;

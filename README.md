@@ -16,6 +16,7 @@ valid values:
   - **"oem", "utf8" (default value), "unicode"**
   
 * [/file:ResultFileName] - destination file name
+* [/excel] - use COM to convert Excel
 * [/log] - show execution details
 
 ### Downloads:

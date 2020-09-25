@@ -12,13 +12,16 @@ interface
 uses
   Winapi.Windows,
   System.Classes,
+
+  System.Variants,
+  Winapi.ActiveX,
+  System.Win.ComObj,
+
   Helper.Singleton,
   Helper.Console,
   Main.Help;
 
 type
-
-  TNavisionString = type AnsiString(866);
   TEncodingType = (ETnone,EToem,ETutf8,ETunicode);
 
   TApp = class(TSingleton)
@@ -38,6 +41,7 @@ type
     FConversionFile: string; // format: OEM,UNICODE
 
     FLog: Boolean;
+    FExcel: Boolean;
 
     FEncodingFrom: TEncodingType;
     FEncodingTo: TEncodingType;
@@ -53,6 +57,7 @@ type
 
     procedure ReadConversionTable;
     procedure ConvertText(InputText: TStringList; OutputText: TStringList);
+    function ConvertLine(InputText: string): string;
 
   public
     destructor Destroy; override;
@@ -65,6 +70,7 @@ type
     property OutputFile: string read FOutputFile;
 
     property Log: Boolean read FLog;
+    property Excel: Boolean read FExcel;
 
     property FileLanguage: string read FLanguage;
     property FileEncoding: string read FEncoding;
@@ -83,7 +89,7 @@ resourcestring
   // application info
   rsAppName = 'YAGE';
   rsAppDescription = 'Yet Another Global Encoder';
-  rsAppVer = '1.4';
+  rsAppVer = '1.5';
   rsCopyright = 'Copyright (c) 2020 Alexey Anisimov / email: softlight@ya.ru';
   rs_UsageHelp = 'Usage: %s.exe SourceFile ConversionTableFile [keys]';
 
@@ -181,6 +187,8 @@ begin
   WriteAppLog(info, Format('Input file: "%s"', [FInputFile]));
   WriteAppLog(info, Format('Conversion: "%s"', [FConversionFile]));
   WriteAppLog(info, Format('Output file: "%s"', [FOutputFile]));
+  if FExcel then
+    WriteAppLog(info, 'MS Excel mode in on!');
 end;
 
 function TApp.CheckParams: Boolean;
@@ -207,6 +215,7 @@ begin
   FEncodingFrom := EToem;
   FEncodingTo := ETutf8;
   FLog := False;
+  FExcel := False;
 
   ParamName := 'log';
   if SearchParam(ParamName, ParamValue) > 0 then
@@ -248,6 +257,12 @@ begin
     FOutputFile := PathSearchAndQualify(System.IOUtils.TPath.GetFileName(ParamValue));
   end;
 
+  ParamName := 'excel';
+  if SearchParam(ParamName, ParamValue) > 0 then
+  begin
+    FExcel := True;
+  end;
+
   if FLog then
     WriteParams;
 
@@ -261,63 +276,105 @@ var
 
   i: Integer;
   j: Integer;
+  x: Integer;
+  y: Integer;
 
   FS: TFileStream;
 
   Letter: Char;
   CharValue: Byte;
   Line: string;
+
+  XLApp: Variant;
+  WorkBook: Variant;
+  WorkSheet: Variant;
 begin
   InputText := TStringList.Create();
   OutputText := TStringList.Create();
 
-  try
-    if FEncodingFrom = ETutf8 then
-      InputText.LoadFromFile(FInputFile, TEncoding.UTF8);
-    if FEncodingFrom = ETunicode then
-      InputText.LoadFromFile(FInputFile, TEncoding.Unicode);
-    if FEncodingFrom = EToem then
-      InputText.LoadFromFile(FInputFile, TEncoding.ANSI);
+  ReadConversionTable;
 
-    ReadConversionTable;
-    ConvertText(InputText, OutputText);
+  if FExcel then
+  begin
+    OLEInitialize(nil);
+    XLApp := CreateOleObject('Excel.Application');
+    XLApp.DisplayAlerts := False;
+    XLApp.Application.Workbooks.Open(FileName:=FInputFile, UpdateLinks:=0, ReadOnly:=False);
+    XLApp.Visible := False;
 
-    if FEncodingTo = ETutf8 then
-      OutputText.SaveToFile(FOutputFile, TEncoding.UTF8);
-    if FEncodingTo = ETunicode then
-      OutputText.SaveToFile(FOutputFile, TEncoding.Unicode);
+    WorkBook := XLApp.WorkBooks.Item[1];
+    WorkSheet := WorkBook.WorkSheets.Item[1];
 
-    if FEncodingTo = EToem then
-    begin
-      FS := TFileStream.Create(FOutputFile, fmCreate);
-      for i := 0 to OutputText.Count - 1 do
+    x := WorkSheet.Cells.SpecialCells(11, EmptyParam).Column;
+    y := WorkSheet.Cells.SpecialCells(11, EmptyParam).Row;
+
+    for j := 1 to y do
+      for i := 1 to x do
       begin
-        Line := OutputText.Strings[i];
-        for j := 1 to Length(Line) do
+        Line := WorkSheet.Cells[j, i].Text;
+        Line := ConvertLine(Line);
+        WorkSheet.Cells[j, i].Value := Line;
+      end;
+
+    if FInputFile = FOutputFile then
+      WorkBook.Close(SaveChanges:=True)
+    else
+      WorkBook.SaveAs(FOutputFile);
+    XLApp.Application.Quit;
+    XLApp := Unassigned;
+    OLEUnInitialize();
+  end
+  else
+  begin
+    try
+      if FEncodingFrom = ETutf8 then
+        InputText.LoadFromFile(FInputFile, TEncoding.UTF8);
+      if FEncodingFrom = ETunicode then
+        InputText.LoadFromFile(FInputFile, TEncoding.Unicode);
+      if FEncodingFrom = EToem then
+        InputText.LoadFromFile(FInputFile, TEncoding.ANSI);
+
+      ReadConversionTable;
+      ConvertText(InputText, OutputText);
+
+      if FEncodingTo = ETutf8 then
+        OutputText.SaveToFile(FOutputFile, TEncoding.UTF8);
+      if FEncodingTo = ETunicode then
+        OutputText.SaveToFile(FOutputFile, TEncoding.Unicode);
+
+      if FEncodingTo = EToem then
+      begin
+        FS := TFileStream.Create(FOutputFile, fmCreate);
+        for i := 0 to OutputText.Count - 1 do
         begin
-          Letter := Line[j];
-          CharValue := Cardinal(Letter);
+          Line := OutputText.Strings[i];
+          for j := 1 to Length(Line) do
+          begin
+            Letter := Line[j];
+            CharValue := Cardinal(Letter);
+            FS.Write(CharValue, 1);
+          end;
+          CharValue := $0d;
+          FS.Write(CharValue, 1);
+          CharValue := $0a;
           FS.Write(CharValue, 1);
         end;
-        CharValue := $0d;
-        FS.Write(CharValue, 1);
-        CharValue := $0a;
-        FS.Write(CharValue, 1);
+        FreeAndNil(FS);
       end;
-      FreeAndNil(FS);
-    end;
 
-  except
-    on E: Exception do
-    begin
-      FreeAndNil(OutputText);
-      FreeAndNil(InputText);
-      raise;
+    except
+      on E: Exception do
+      begin
+        FreeAndNil(OutputText);
+        FreeAndNil(InputText);
+        raise;
+      end;
     end;
   end;
-
+          
   FreeAndNil(OutputText);
   FreeAndNil(InputText);
+
   FExitCode := 0;
   WriteAppLog(ok, 'Done!');
 end;
@@ -429,6 +486,51 @@ begin
       Line2 := Line2 + Letter;
     end;
     OutputText.Add(Line2);
+  end;
+end;
+
+function TApp.ConvertLine(InputText: string): string;
+var
+  j: Integer;
+  k: Integer;
+  Letter: Char;
+  CharValue: Cardinal;
+  Found: Boolean;
+begin
+  Result := '';
+  for j := 1 to Length(InputText) do
+  begin
+    Letter := InputText[j];
+    CharValue := Cardinal(Letter);
+
+    if CharValue >= 127 then
+    begin
+      Found := False;
+      k := 0;
+      while (Found = False) and (k < FConversionTableSize) do
+      begin
+        if FEncodingFrom = EToem then begin
+          if CharValue = FConversionTable[0, k] then
+          begin
+            CharValue := FConversionTable[1, k];
+            Found := True;
+          end;
+        end
+        else
+        begin
+          if CharValue = FConversionTable[1, k] then
+          begin
+            CharValue := FConversionTable[0, k];
+            Found := True;
+          end;
+        end;
+
+        Inc(k);
+      end;
+
+      Letter := Char(CharValue);
+    end;
+    Result := Result + Letter;
   end;
 end;
 

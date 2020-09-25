@@ -57,6 +57,7 @@ begin
   List.Add('    valid values:');
   List.Add('      - "oem", "utf8" (default value), "unicode"');
   List.Add('[/file:ResultFileName] - destination file name');
+  List.Add('[/excel] - use COM to convert Excel');
   List.Add('[/log] - show execution details');
   List.Add('');
 
