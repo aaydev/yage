@@ -1,11 +1,13 @@
 {*******************************************************}
 { YAGE: Yet Another Global Encoder                      }
 { Unit: Main.Help                                       }
-{ Copyright(c) 2020 Alexey Anisimov                     }
+{ Copyright(c) 2021 Alexey Anisimov                     }
 { Contact email: softlight@ya.ru                        }
 {*******************************************************}
 
 unit Main.Help;
+
+{$MODE delphiunicode}
 
 interface
 
@@ -35,9 +37,7 @@ resourcestring
 implementation
 
 uses
-  System.Classes,
-  Winapi.Windows,
-  System.Sysutils,
+  Sysutils, Windows, Classes,
   Helper.Console;
 
 procedure WriteAppHelp(const AppName: string; const UsageString: string);

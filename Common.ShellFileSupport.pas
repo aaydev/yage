@@ -6,7 +6,12 @@
 
 unit Common.ShellFileSupport;
 
+{$MODE Delphi}
+
 interface
+
+uses
+  LazUTF8;
 
 type
   TDriveNumber    = 0..25;
@@ -38,7 +43,7 @@ function PathAppend(const APath, AMore: string): string;
 function PathCombine(const APath, AMore: string): string;
 
 // Returns True if the specified path (file / directory) exists
-// Implement in case you don’t want to use the great FileExists / DirectoryExists from Delphi
+// Implement in case you donâ€™t want to use the great FileExists / DirectoryExists from Delphi
 // Cm.
 // http://qc.embarcadero.com/wc/qcmain.aspx?d=3513
 // http://qc.embarcadero.com/wc/qcmain.aspx?d=10731
@@ -46,7 +51,7 @@ function PathCombine(const APath, AMore: string): string;
 function PathFileExists(const APath: string): Boolean;
 
 // Returns true if the path is a directory
-// Implement in case you don’t want to use the great FileExists / DirectoryExists from Delphi
+// Implement in case you donâ€™t want to use the great FileExists / DirectoryExists from Delphi
 // Cm.
 // http://qc.embarcadero.com/wc/qcmain.aspx?d=3513
 // http://qc.embarcadero.com/wc/qcmain.aspx?d=10731
@@ -69,7 +74,7 @@ function PathQuoteSpaces(const APath: string; const AForce: Boolean = False): st
 function PathRelativePathTo(const AFrom, ATo: string): string;
 
 // Allows relative name to absolute, additionally canonizing the path
-function PathSearchAndQualify(const APath: string): string;
+function PathSearchAndQualifyA(const APath: string): string;
 
 // Returns a short name for a long
 function PathGetShortPath(const APath: string): string;
@@ -399,13 +404,13 @@ end;
 var
   FPathSearchAndQualify: function(APath, AFullyQualifiedPath: PChar; Len: UINT): BOOL; stdcall;
 
-function PathSearchAndQualify(const APath: string): string;
+function PathSearchAndQualifyA(const APath: string): string;
 var
   Buffer: string;
 begin
   if not Assigned(FPathSearchAndQualify) then
   begin
-    FPathSearchAndQualify := GetProcAddress(ShlwAPI, {$IFDEF UNICODE}'PathSearchAndQualifyW'{$ELSE}'PathSearchAndQualifyA'{$ENDIF});
+    FPathSearchAndQualify := GetProcAddress(ShlwAPI, 'PathSearchAndQualifyA');
     Win32Check(Assigned(FPathSearchAndQualify));
   end;
 

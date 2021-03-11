@@ -1,20 +1,21 @@
 {*******************************************************}
 { YAGE: Yet Another Global Encoder                      }
 { Unit: Project                                         }
-{ Copyright(c) 2019 Alexey Anisimov                     }
+{ Copyright(c) 2021 Alexey Anisimov                     }
 { Contact email: softlight@ya.ru                        }
 {*******************************************************}
 
 program Project1;
+
+{$MODE delphiunicode}
 
 {$APPTYPE CONSOLE}
 
 {$R *.res}
 
 uses
-  Winapi.Windows,
-  System.SysUtils,
-  System.DateUtils,
+
+  Windows, SysUtils, DateUtils,
   Main.Exec in 'Main.Exec.pas',
   Main.Help in 'Main.Help.pas',
   Helper.Console in 'Helper.Console.pas',
@@ -45,7 +46,7 @@ begin
   except
     on E: Exception do
     begin
-      WriteAppLog(error, Format('%s: %s', [E.ClassName, E.Message]));
+      WriteAppLog(error, string(Format('%s: %s', [E.ClassName, E.Message])));
       App.StopTime := Now;
       App.ElapsedTime := MilliSecondsBetween(App.StartTime, App.StopTime);
       if App.Log then

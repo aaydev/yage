@@ -1,11 +1,14 @@
 {*******************************************************}
 { YAGE: Yet Another Global Encoder                      }
 { Unit: Helper.Singleton                                }
-{ Copyright(c) 2019 Alexey Anisimov                     }
+{ Copyright(c) 2021 Alexey Anisimov                     }
 { Contact email: softlight@ya.ru                        }
 {*******************************************************}
 
 unit Helper.Singleton;
+
+
+{$MODE delphiunicode}
 
 interface
 
@@ -27,9 +30,8 @@ type
 implementation
 
 uses
-  System.Types,
-  System.Classes,
-  System.Contnrs;
+  Classes, Types, Contnrs;
+
 
 var
   SingletonList : TObjectList;

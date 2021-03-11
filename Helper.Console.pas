@@ -1,16 +1,19 @@
 {*******************************************************}
 { YAGE: Yet Another Global Encoder                      }
 { Unit: Helper.Console                                  }
-{ Copyright(c) 2019 Alexey Anisimov                     }
+{ Copyright(c) 2021 Alexey Anisimov                     }
 { Contact email: softlight@ya.ru                        }
 {*******************************************************}
 
 unit Helper.Console;
 
+{$MODE delphiunicode}
+
 interface
 
 uses
-  Winapi.Windows,
+
+  Windows,
   Helper.Singleton;
 
 type

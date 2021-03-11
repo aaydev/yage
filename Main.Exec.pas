@@ -1,22 +1,19 @@
 {*******************************************************}
 { YAGE: Yet Another Global Encoder                      }
 { Unit: Main.Exec                                       }
-{ Copyright(c) 2020 Alexey Anisimov                     }
+{ Copyright(c) 2021 Alexey Anisimov                     }
 { Contact email: softlight@ya.ru                        }
 {*******************************************************}
 
 unit Main.Exec;
 
+{$MODE delphiunicode}
+
 interface
 
 uses
-  Winapi.Windows,
-  System.Classes,
 
-  System.Variants,
-  Winapi.ActiveX,
-  System.Win.ComObj,
-
+  Classes, Variants, ActiveX, ComObj, LazUTF8,
   Helper.Singleton,
   Helper.Console,
   Main.Help;
@@ -89,7 +86,7 @@ resourcestring
   // application info
   rsAppName = 'YAGE';
   rsAppDescription = 'Yet Another Global Encoder';
-  rsAppVer = '1.5';
+  rsAppVer = '1.6';
   rsCopyright = 'Copyright (c) 2020 Alexey Anisimov / email: softlight@ya.ru';
   rs_UsageHelp = 'Usage: %s.exe SourceFile ConversionTableFile [keys]';
 
@@ -101,9 +98,7 @@ resourcestring
 implementation
 
 uses
-  System.SysUtils,
-  System.DateUtils,
-  System.IOUtils,
+  DateUtils, SysUtils,
   Common.ShellFileSupport;
 
 function App: TApp;
@@ -126,7 +121,7 @@ end;
 destructor TApp.Destroy;
 begin
   // Save settings here
-  FreeAndNil(FParamList);
+  FParamList.Free;
   inherited Destroy;
 end;
 
@@ -200,12 +195,12 @@ begin
   if FParamList.Count = 1 then
     Exit;
   // check source file
-  FInputFile := PathSearchAndQualify(FParamList[1]);
+  FInputFile := PathSearchAndQualifyA(FParamList[1]);
   if not FileExists(FInputFile) then
     raise EFileNotFoundException.Create(Format(rs_ErrFileNotFound, [FInputFile]));
 
   // check conversion file
-  FConversionFile := PathSearchAndQualify(FParamList[2]);
+  FConversionFile := PathSearchAndQualifyA(FParamList[2]);
   if not FileExists(FConversionFile) then
     raise EFileNotFoundException.Create(Format(rs_ErrFileNotFound, [FConversionFile]));
 
@@ -254,7 +249,7 @@ begin
   ParamName := 'file';
   if SearchParam(ParamName, ParamValue) > 0 then
   begin
-    FOutputFile := PathSearchAndQualify(System.IOUtils.TPath.GetFileName(ParamValue));
+    FOutputFile := PathSearchAndQualifyA(ExtractFileName(ParamValue));
   end;
 
   ParamName := 'excel';
