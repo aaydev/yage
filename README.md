@@ -24,4 +24,4 @@ yage.exe EXAMPLE.xlsx GE.txt /excel /log
 - MS Excel file "EXAMPLE.xlsx" will be converted from OEM to UTF8 encoding using mapping of Georgian characters with add. logging
 
 ### Downloads:
-- [Latest build](https://github.com/zxrepo/aaydev.yage/releases)
+- [Latest build](https://github.com/zxrepo/aaydev.yage/releases/latest)
