@@ -20,4 +20,4 @@ valid values:
 * [/log] - show execution details
 
 ### Downloads:
-- [Latest build](https://github.com/incanav/yage/releases/latest)
+- [Latest build](https://github.com/zxrepo/aaydev.yage/releases)
