@@ -16,8 +16,12 @@ valid values:
   - **"oem", "utf8" (default value), "unicode"**
   
 * [/file:ResultFileName] - destination file name
-* [/excel] - use COM to convert Excel
+* [/excel] - use COM to convert Excel (MS Excel must be installed on the target PC!)
 * [/log] - show execution details
+
+### Example:
+yage.exe EXAMPLE.xlsx GE.txt /excel /log
+- MS Excel file "EXAMPLE.xlsx" will be converted from OEM to UTF8 encoding using mapping of Georgian characters with add. logging
 
 ### Downloads:
 - [Latest build](https://github.com/zxrepo/aaydev.yage/releases)
